@@ -10,7 +10,7 @@ import Foundation
 class APIClient {
     static let shared = APIClient()
     
-    private let baseURL = "https://ark.cn-beijing.volces.com/api/v1"
+    private let url = URL(string: "https://console.volcengine.com/api/top/ark/cn-beijing/2024-01-01/GetCodingPlanUsage")!
     private var msToken: String?
     
     private init() {}
@@ -24,7 +24,6 @@ class APIClient {
             throw APIError(message: "Token 未设置", statusCode: -1)
         }
         
-        let url = URL(string: "\(baseURL)/end-users/current/subscription")!
         var request = URLRequest(url: url)
         request.httpMethod = "GET"
         // 设置 Cookie 认证
@@ -42,25 +41,22 @@ class APIClient {
         
         // 火山方舟 API 返回格式:
         // {
-        //   "result": {
-        //     "current": {
-        //       "name": "Pro Plan",
-        //       "total_tokens": 1000000,
-        //       "used_tokens": 150000,
-        //       "remaining_tokens": 850000
-        //     }
+        //   "data": {
+        //     "planName": "Pro Plan",
+        //     "total": 1000000,
+        //     "used": 150000,
+        //     "remaining": 850000
         //   }
         // }
         
         do {
             let json = try JSONSerialization.jsonObject(with: data) as? [String: Any]
-            let result = json?["result"] as? [String: Any]
-            let current = result?["current"] as? [String: Any]
+            let data = json?["data"] as? [String: Any]
             
-            guard let name = current?["name"] as? String,
-                  let total = current?["total_tokens"] as? Int,
-                  let used = current?["used_tokens"] as? Int,
-                  let remaining = current?["remaining_tokens"] as? Int else {
+            guard let name = data?["planName"] as? String,
+                  let total = data?["total"] as? Int,
+                  let used = data?["used"] as? Int,
+                  let remaining = data?["remaining"] as? Int else {
                 throw APIError(message: "无法解析 API 返回数据，请检查 Token 是否正确", statusCode: httpResponse.statusCode)
             }
             

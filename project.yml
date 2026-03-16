@@ -1,0 +1,11 @@
+name: ArkCodePlanMenu
+targets:
+  ArkCodePlanMenu:
+    type: application
+    platform: macOS
+    deploymentTarget: "13.0"
+    sources:
+      - ArkCodePlanMenu
+    settings:
+      PRODUCT_BUNDLE_IDENTIFIER: com.willlling.ArkCodePlanMenu
+      INFOPLIST_FILE: ArkCodePlanMenu/Info.plist
